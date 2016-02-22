@@ -4,16 +4,39 @@ import spock.lang.Specification
 
 class RationalSpec extends Specification {
 
-    def "As Type"() {
+    def "To String"() {
         expect:
-        a as Rational == b
+        new Rational(a).toString() == b
 
         where:
-        a       || b
-        3 / 4   || new Rational(3, 4)
-        1 / 3   || new Rational(1, 3)
-        10      || new Rational(10, 1)
-        11 / 57 || new Rational(11, 57)
+        a             || b
+        3 / 4         || "3/4"
+        10            || "10"
+        1 / 2         || "1/2"
+        3.0 as double || "3"
+//        "7/10"        || "7/10"
+    }
+
+    def "Equals"() {
+        expect:
+        new Rational(a).equals(b)
+
+        where:
+        a             | b
+        3 / 4         | new Rational(3, 4)
+        10            | 10
+        1 / 2         | 0.5
+        3.0 as double | 3
+    }
+
+    def "Sort"() {
+        expect:
+        [a, b, c].indexed().sort { it.value }.keySet().toList() == [0, 1, 2]
+
+        where:
+        a                   | b                   | c
+        new Rational(1, 10) | new Rational(2, 10) | new Rational(5, 10)
+        new Rational(10, 5) | new Rational(10, 2) | 10
     }
 
     def "Plus"() {
@@ -25,7 +48,12 @@ class RationalSpec extends Specification {
         new Rational(3, 4) | new Rational(3, 4) || new Rational(3, 2)
         new Rational(3, 4) | 2                  || new Rational(11, 4)
         2                  | new Rational(3, 4) || new Rational(11, 4)
-        1                  | new Rational(3, 4) || new Rational(7, 4)
+        1L                 | new Rational(3, 4) || new Rational(7, 4)
+        2 as Byte          | new Rational(3, 4) || new Rational(11, 4)
+        1 as Short         | new Rational(3, 4) || new Rational(7, 4)
+        3 / 4              | new Rational(3, 4) || new Rational(3, 2)
+        0.75 as double     | new Rational(3, 4) || new Rational(3, 2)
+        0.75 as float      | new Rational(3, 4) || new Rational(3, 2)
     }
 
     def "Minus"() {

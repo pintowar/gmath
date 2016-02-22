@@ -1,6 +1,6 @@
 plugins {
-    id 'java'
-//    id 'net.saliman.cobertura' version '2.3.0'
+    id 'groovy'
+    id 'net.saliman.cobertura' version '2.3.0'
 }
 
 group = 'com.github.pintowar'
@@ -14,5 +14,5 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-//    testRuntime "org.slf4j:slf4j-api:1.7.10"
+    testRuntime "org.slf4j:slf4j-api:1.7.10"
 }

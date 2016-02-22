@@ -1,13 +1,11 @@
-package gmath;
+package gmath.ext;
+
+import gmath.Rational;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public final class NumberExtension {
-
-    public static Number asType(final Number self, final Class<? extends Rational> c) {
-        return new Rational(self);
-    }
 
     //plus operator
     public static Rational plus(final Byte self, final Rational num) {

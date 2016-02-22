@@ -29,7 +29,7 @@ import java.math.BigInteger;
  * @author Daniel Dyer
  * @since 1.2
  */
-public final class Rational extends Number implements Comparable<Rational> {
+public final class Rational extends Number implements Comparable<Number> {
     private final long numerator;
     private final long denominator;
 
@@ -66,17 +66,15 @@ public final class Rational extends Number implements Comparable<Rational> {
      * @throws ArithmeticException If the BigDecimal value is too large to be
      *                             represented as a Rational.
      */
-    public Rational(BigDecimal value) {
-        BigDecimal trimmedValue = value.stripTrailingZeros();
-        BigInteger denominator = BigInteger.TEN.pow(trimmedValue.scale());
-        BigInteger numerator = trimmedValue.unscaledValue();
-        BigInteger gcd = numerator.gcd(denominator);
-        this.numerator = numerator.divide(gcd).longValue();
-        this.denominator = denominator.divide(gcd).longValue();
-    }
-
     public Rational(Number value) {
-        if (value.getClass() == Double.class || value.getClass() == Float.class) {
+        if (value.getClass() == BigDecimal.class) {
+            BigDecimal trimmedValue = ((BigDecimal) value).stripTrailingZeros();
+            BigInteger denominator = BigInteger.TEN.pow(trimmedValue.scale());
+            BigInteger numerator = trimmedValue.unscaledValue();
+            BigInteger gcd = numerator.gcd(denominator);
+            this.numerator = numerator.divide(gcd).longValue();
+            this.denominator = denominator.divide(gcd).longValue();
+        } else if (value.getClass() == Double.class || value.getClass() == Float.class) {
             BigDecimal trimmedValue = new BigDecimal(value.doubleValue()).stripTrailingZeros();
             BigInteger denominator = BigInteger.TEN.pow(trimmedValue.scale());
             BigInteger numerator = trimmedValue.unscaledValue();
@@ -274,10 +272,10 @@ public final class Rational extends Number implements Comparable<Rational> {
         if (this == other) {
             return true;
         }
-        if (other == null || this.getClass() != other.getClass()) {
+        if (other == null || !(this instanceof Number)) {
             return false;
         }
-        Rational rational = (Rational) other;
+        Rational rational = new Rational((Number) other);
 
         return denominator == rational.denominator && numerator == rational.numerator;
     }
@@ -322,12 +320,13 @@ public final class Rational extends Number implements Comparable<Rational> {
      * @return A negative integer, zero, or a positive integer as this value is less
      * than, equal to, or greater than the specified value.
      */
-    public int compareTo(Rational other) {
-        if (denominator == other.denominator) {
-            return ((Long) numerator).compareTo(other.numerator);
+    public int compareTo(Number other) {
+        Rational that = new Rational(other);
+        if (denominator == that.denominator) {
+            return ((Long) numerator).compareTo(that.numerator);
         } else {
-            Long adjustedNumerator = numerator * other.denominator;
-            Long otherAdjustedNumerator = other.numerator * denominator;
+            Long adjustedNumerator = numerator * that.denominator;
+            Long otherAdjustedNumerator = that.numerator * denominator;
             return adjustedNumerator.compareTo(otherAdjustedNumerator);
         }
     }
