@@ -1,7 +1,8 @@
 plugins {
     id 'groovy'
     id 'net.saliman.cobertura' version '2.3.0'
-    id "com.jfrog.bintray" version "1.6"
+    id 'com.jfrog.bintray' version '1.6'
+    id 'maven-publish'
 }
 
 group = 'com.github.pintowar'
@@ -38,6 +39,47 @@ artifacts {
     archives jar
     archives sourcesJar
     archives javadocJar
+}
+
+def pomConfig = {
+    scm {
+        url 'https://github.com/pintowar/gmath'
+        connection 'scm:https://github.com/pintowar/gmath.git'
+        developerConnection 'scm:git://github.com/pintowar/gmath.git'
+    }
+    licenses {
+        license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
+        }
+    }
+    developers {
+        developer {
+            id 'pintowar'
+            name 'Thiago Oliveira'
+            email 'pintowar@gmail.com'
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode( 'name', 'gmath' )
+                root.appendNode( 'description', 'An additional math package for groovy.' )
+                root.appendNode( 'url', 'http://github.com/pintowar/gmath/' )
+                root.appendNode( 'inceptionYear', '2016' )
+                root.children().last() + pomConfig
+            }
+        }
+    }
 }
 
 bintray {
