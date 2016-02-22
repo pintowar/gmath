@@ -106,7 +106,7 @@ public final class NumberExtension {
         return num.multiply(self);
     }
 
-    // multiply operator
+    // divide operator
     public static Rational div(final Byte self, final Rational num) {
         return num.inverse().multiply(self);
     }

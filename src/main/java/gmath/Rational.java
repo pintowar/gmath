@@ -29,7 +29,7 @@ import java.math.BigInteger;
  * @author Daniel Dyer
  * @since 1.2
  */
-public final class Rational extends Number implements Comparable<Number> {
+public final class Rational extends Number implements Comparable<Rational> {
     private final long numerator;
     private final long denominator;
 
@@ -320,13 +320,12 @@ public final class Rational extends Number implements Comparable<Number> {
      * @return A negative integer, zero, or a positive integer as this value is less
      * than, equal to, or greater than the specified value.
      */
-    public int compareTo(Number other) {
-        Rational that = new Rational(other);
-        if (denominator == that.denominator) {
-            return ((Long) numerator).compareTo(that.numerator);
+    public int compareTo(Rational other) {
+        if (denominator == other.denominator) {
+            return ((Long) numerator).compareTo(other.numerator);
         } else {
-            Long adjustedNumerator = numerator * that.denominator;
-            Long otherAdjustedNumerator = that.numerator * denominator;
+            Long adjustedNumerator = numerator * other.denominator;
+            Long otherAdjustedNumerator = other.numerator * denominator;
             return adjustedNumerator.compareTo(otherAdjustedNumerator);
         }
     }
