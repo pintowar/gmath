@@ -1,6 +1,7 @@
 plugins {
     id 'groovy'
     id 'net.saliman.cobertura' version '2.3.0'
+    id "com.jfrog.bintray" version "1.6"
 }
 
 group = 'com.github.pintowar'
@@ -11,8 +12,60 @@ repositories {
     jcenter()
 }
 
+ext{
+    if( !hasProperty( 'bintray_user' ) ) bintray_user = ''
+    if( !hasProperty( 'bintray_api_key' ) ) bintray_api_key = ''
+    if( !hasProperty( 'key_phrase' ) ) key_phrase = ''
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testRuntime "org.slf4j:slf4j-api:1.7.10"
 }
+
+task javadocJar( type: Jar, dependsOn: javadoc ) {
+    classifier 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar( type: Jar ) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+bintray {
+    user = bintray_user
+    key = bintray_api_key
+    publications = ['mavenJava'] // When uploading Maven-based publication files
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    pkg {
+        repo = 'maven'
+        name = project.name
+        desc = 'Library for Groovy that mount queries with a simple configuration.'
+        websiteUrl = 'https://github.com/pintowar/gmath'
+        issueTrackerUrl = 'https://github.com/pintowar/gmath/issues'
+        vcsUrl = 'https://github.com/pintowar/gmath.git'
+        licenses = ['Apache 2.0']
+        labels = ['groovy', 'math', 'rational']
+        publicDownloadNumbers = true
+        version {
+            name = project.version
+            //Optional configuration for GPG signing
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = key_phrase //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
+}
+
+bintrayUpload.dependsOn(check)
