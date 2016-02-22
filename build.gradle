@@ -90,7 +90,7 @@ bintray {
         websiteUrl = 'https://github.com/pintowar/gmath'
         issueTrackerUrl = 'https://github.com/pintowar/gmath/issues'
         vcsUrl = 'https://github.com/pintowar/gmath.git'
-        licenses = ['Apache 2.0']
+        licenses = ['Apache-2.0']
         labels = ['groovy', 'math', 'rational']
         publicDownloadNumbers = true
         version {
