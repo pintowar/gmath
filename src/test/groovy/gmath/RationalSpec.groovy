@@ -6,7 +6,7 @@ class RationalSpec extends Specification {
 
     def "To String"() {
         expect:
-        new Rational(a).toString() == b
+        (a as Rational).toString() == b
 
         where:
         a             || b
@@ -29,14 +29,15 @@ class RationalSpec extends Specification {
         3.0 as double | 3
     }
 
-    def "Sort"() {
+    def "Less Than"() {
         expect:
-        [a, b, c].indexed().sort { it.value }.keySet().toList() == [0, 1, 2]
+        a < b
 
         where:
-        a                   | b                   | c
-        new Rational(1, 10) | new Rational(2, 10) | new Rational(5, 10)
-        new Rational(10, 5) | new Rational(10, 2) | 10
+        a                   | b
+        new Rational(1, 10) | new Rational(2, 10)
+        new Rational(10, 5) | new Rational(10, 2)
+        new Rational(5, 4) | new Rational(20, 3)
     }
 
     def "Plus"() {
@@ -99,6 +100,7 @@ class RationalSpec extends Specification {
         new Rational(3, 4) | 2                  || new Rational(9, 16)
         4                  | new Rational(1, 2) || 2
         2                  | new Rational(1, 2) || Math.sqrt(2)
+        5                  | new Rational(1, 4) || Math.pow(5, 0.25)
     }
 
     def "Negative"() {

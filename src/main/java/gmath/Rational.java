@@ -29,7 +29,7 @@ import java.math.BigInteger;
  * @author Daniel Dyer
  * @since 1.2
  */
-public final class Rational extends Number implements Comparable<Rational> {
+public final class Rational implements Comparable<Rational> {
     private final long numerator;
     private final long denominator;
 
@@ -81,9 +81,6 @@ public final class Rational extends Number implements Comparable<Rational> {
             BigInteger gcd = numerator.gcd(denominator);
             this.numerator = numerator.divide(gcd).longValue();
             this.denominator = denominator.divide(gcd).longValue();
-        } else if (value.getClass() == getClass()) {
-            this.numerator = ((Rational) value).numerator;
-            this.denominator = ((Rational) value).denominator;
         } else {
             this.numerator = value.longValue();
             this.denominator = 1;
@@ -112,6 +109,15 @@ public final class Rational extends Number implements Comparable<Rational> {
         return new Rational(denominator, numerator);
     }
 
+    public Rational plus(Rational other) {
+        if (denominator == other.denominator) {
+            return new Rational(numerator + other.numerator, denominator);
+        } else {
+            return new Rational(numerator * other.denominator + other.numerator * denominator,
+                    denominator * other.denominator);
+        }
+    }
+
     /**
      * Add the specified value to this value and return the result as a new object
      * (also a rational).  If the two values have different denominators, they will
@@ -123,12 +129,11 @@ public final class Rational extends Number implements Comparable<Rational> {
      */
     public Rational plus(Number other) {
         Rational value = new Rational(other);
-        if (denominator == value.denominator) {
-            return new Rational(numerator + value.numerator, denominator);
-        } else {
-            return new Rational(numerator * value.denominator + value.numerator * denominator,
-                    denominator * value.denominator);
-        }
+        return this.plus(value);
+    }
+
+    public Rational minus(Rational other) {
+        return plus(other.negative());
     }
 
     /**
@@ -142,12 +147,12 @@ public final class Rational extends Number implements Comparable<Rational> {
      */
     public Rational minus(Number other) {
         Rational value = new Rational(other);
-        if (denominator == value.denominator) {
-            return new Rational(numerator - value.numerator, denominator);
-        } else {
-            return new Rational(numerator * value.denominator - value.numerator * denominator,
-                    denominator * value.denominator);
-        }
+        return this.minus(value);
+    }
+
+    public Rational multiply(Rational other) {
+        return new Rational(numerator * other.numerator,
+                denominator * other.denominator);
     }
 
     /**
@@ -160,8 +165,12 @@ public final class Rational extends Number implements Comparable<Rational> {
      */
     public Rational multiply(Number other) {
         Rational value = new Rational(other);
-        return new Rational(numerator * value.numerator,
-                denominator * value.denominator);
+        return this.multiply(value);
+    }
+
+    public Rational div(Rational other) {
+        return new Rational(numerator * other.denominator,
+                denominator * other.numerator);
     }
 
     /**
@@ -174,15 +183,18 @@ public final class Rational extends Number implements Comparable<Rational> {
      */
     public Rational div(Number other) {
         Rational value = new Rational(other);
-        return new Rational(numerator * value.denominator,
-                denominator * value.numerator);
+        return this.div(value);
+    }
+
+    public Rational power(Rational other) {
+        Rational aux = new Rational((long) Math.pow(numerator, other.numerator),
+                (long) Math.pow(denominator, other.numerator));
+        return aux;
     }
 
     public Rational power(Number other) {
         Rational value = new Rational(other);
-        Rational aux = new Rational((long) Math.pow(numerator, value.numerator),
-                (long) Math.pow(denominator, value.numerator));
-        return aux;
+        return this.power(value);
     }
 
     public Rational negative() {
@@ -272,10 +284,10 @@ public final class Rational extends Number implements Comparable<Rational> {
         if (this == other) {
             return true;
         }
-        if (other == null || !(this instanceof Number)) {
+        if (other == null) {
             return false;
         }
-        Rational rational = new Rational((Number) other);
+        Rational rational = other instanceof Number ? new Rational((Number) other) : (Rational) other;
 
         return denominator == rational.denominator && numerator == rational.numerator;
     }
