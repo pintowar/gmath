@@ -196,7 +196,7 @@ public final class Rational implements Comparable<Rational> {
 
     public Rational mod(Rational other) {
         Rational div = this.div(other);
-        return this.minus(other.multiply(div.intValue()));
+        return this.minus(other.multiply(div.longValue()));
     }
 
     public Rational mod(Number other) {

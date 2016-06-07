@@ -30,7 +30,7 @@ public final class NumberExtension {
         return Math.pow(self.doubleValue(), num.doubleValue());
     }
 
-    // power operator
+    // mod operator
     public static double mod(final Number self, final Rational num) {
         return self.doubleValue() % num.doubleValue();
     }
