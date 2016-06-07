@@ -1,5 +1,6 @@
 package gmath.ext;
 
+import gmath.Complex;
 import gmath.Rational;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
@@ -38,6 +39,7 @@ public final class NumberExtension {
     // as operator
     public static <T> T asType(Number self, Class<T> clazz) {
         if (clazz == Rational.class) return (T) new Rational(self);
+        else if (clazz == Complex.class) return (T) new Complex(self);
         else return DefaultGroovyMethods.asType(self, clazz);
     }
 }
