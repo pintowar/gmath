@@ -186,19 +186,30 @@ public final class Rational implements Comparable<Rational> {
         return this.div(value);
     }
 
-    public Rational power(Rational other) {
-        Rational aux = new Rational((long) Math.pow(numerator, other.numerator),
-                (long) Math.pow(denominator, other.numerator));
-        return aux;
+    public double power(Rational other) {
+        return Math.pow(this.doubleValue(), other.doubleValue());
     }
 
-    public Rational power(Number other) {
+    public double power(Number other) {
+        return Math.pow(this.doubleValue(), other.doubleValue());
+    }
+
+    public Rational mod(Rational other) {
+        Rational div = this.div(other);
+        return this.minus(other.multiply(div.intValue()));
+    }
+
+    public Rational mod(Number other) {
         Rational value = new Rational(other);
-        return this.power(value);
+        return this.mod(value);
     }
 
     public Rational negative() {
         return this.multiply(-1);
+    }
+
+    public Rational positive() {
+        return new Rational(this.numerator, this.denominator);
     }
 
     /**

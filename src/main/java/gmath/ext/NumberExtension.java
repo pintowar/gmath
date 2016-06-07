@@ -30,6 +30,11 @@ public final class NumberExtension {
         return Math.pow(self.doubleValue(), num.doubleValue());
     }
 
+    // power operator
+    public static double mod(final Number self, final Rational num) {
+        return self.doubleValue() % num.doubleValue();
+    }
+
     // as operator
     public static <T> T asType(Number self, Class<T> clazz) {
         if (clazz == Rational.class) return (T) new Rational(self);
