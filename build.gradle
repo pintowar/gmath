@@ -83,8 +83,8 @@ publishing {
 }
 
 bintray {
-    user = bintray_user
-    key = bintray_api_key
+    user = hasProperty('bintray_user') ? bintray_user : System.getenv('bintray_user') //bintray_user
+    key = hasProperty('bintray_api_key') ? bintray_api_key : System.getenv('bintray_api_key') //bintray_api_key
     publications = ['mavenJava'] // When uploading Maven-based publication files
 
     dryRun = false //Whether to run this as dry-run, without deploying
@@ -104,7 +104,7 @@ bintray {
             //Optional configuration for GPG signing
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = key_phrase //Optional. The passphrase for GPG signing'
+                passphrase = hasProperty('key_phrase') ? key_phrase : System.getenv('key_phrase') //key_phrase //Optional. The passphrase for GPG signing'
             }
         }
     }
